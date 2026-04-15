@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grana na Mão (Protótipo)</title>
+    <link rel="icon" type="image/png" href="icons/grana_na_mao-icon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <section id="tela-dashboard" class="tela ativa">
+        <div class="saldo-header"><h1 class="saldo-txt">R$ 0,00</h1></div>
+        <button class="btn-detalhes" onclick="navegar('tela-resumo')">☰ RESUMO</button>
+        <div class="footer-main">
+            <button class="btn-venda" onclick="iniciarFluxo('venda')">+</button>
+            <button class="btn-gasto" onclick="iniciarFluxo('gasto')">-</button>
+        </div>
+    </section>
+
+    <section id="tela-resumo" class="tela">
+        <div class="top-bar">
+            <button class="btn-voltar" onclick="navegar('tela-dashboard')">←</button>
+            <button class="btn-config" onclick="navegar('tela-cadastro')">⚙</button>
+        </div>
+        <div class="lista-resumo">
+            <div class="card-resumo " onclick="abrirHistorico('dinheiro')">
+                <span>
+                    <img src="icons/dinheiro-icon.png" alt="Ícone DINHEIRO">
+                    DINHEIRO
+                </span> 
+                <span class="valor-resumo" id="total-dinheiro">R$ 0,00</span>
+            </div>
+
+            <div class="card-resumo" onclick="abrirHistorico('pix')">
+                <span>
+                    <img src="icons/pix-icon.png" alt="Ícone PIX">
+                    PIX
+                </span> 
+                <span class="valor-resumo" id="total-pix">R$ 0,00</span>
+            </div>
+
+            <div class="card-resumo" onclick="abrirHistorico('debito')">
+                <span>
+                    <img src="icons/debito-icon.png" alt="Ícone DÉBITO">
+                    DÉBITO
+                </span> 
+                <span class="valor-resumo" id="total-debito">R$ 0,00</span>
+            </div>
+
+            <div class="card-resumo" onclick="abrirHistorico('credito')">
+                <span>
+                    <img src="icons/credito-icon.png" alt="Ícone CRÉDITO">
+                    CRÉDITO
+                </span> 
+                <span class="valor-resumo" id="total-credito">R$ 0,00</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="tela-historico" class="tela" style="background-color: #000;">
+        <div class="top-bar">
+            <button class="btn-voltar" onclick="navegar('tela-resumo')">←</button>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-right: 85px;">
+                <span style="font-size: 0.8rem; color: #888; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">HISTÓRICO</span>
+                <h2 id="titulo-historico" style="color: #fff; text-transform: uppercase; font-size: 1.5rem;">CATEGORIA</h2>
+            </div>
+        </div>
+        <div id="container-historico" class="lista-historico"></div>
+    </section>
+
+    <section id="tela-teclado" class="tela">
+        <button class="btn-fechar-x" onclick="navegar('tela-dashboard')">X</button>
+        
+        <div class="display-digito"><span>R$</span> <strong></strong></div>
+        <div class="grid-teclado">
+            <div class="tecla" onclick="digitar('7')">7</div><div class="tecla" onclick="digitar('8')">8</div><div class="tecla" onclick="digitar('9')">9</div>
+            <div class="tecla" onclick="digitar('4')">4</div><div class="tecla" onclick="digitar('5')">5</div><div class="tecla" onclick="digitar('6')">6</div>
+            <div class="tecla" onclick="digitar('1')">1</div><div class="tecla" onclick="digitar('2')">2</div><div class="tecla" onclick="digitar('3')">3</div>
+            <div class="tecla" onclick="digitar(',')">,</div><div class="tecla" onclick="digitar('0')">0</div><div class="tecla" style="background: #8B0000;" onclick="digitar('⌫')">⌫</div>
+        </div>
+        <button class="btn-ok" id="btn-ok" onclick="navegar('tela-categoria')">✓</button>
+    </section>
+
+    <section id="tela-categoria" class="tela">
+        <div class="top-bar"><button class="btn-voltar" onclick="navegar('tela-teclado')">←</button></div>
+        
+        <div class="grid-cat">
+            <div class="card-cat" onclick="selecionarMetodo(this, 'dinheiro')"><img src="icons/dinheiro-icon.png" alt="Ícone DINHEIRO">DINHEIRO</div>
+            <div id="card-pix" class="card-cat" onclick="selecionarMetodo(this, 'pix')"><img src="icons/pix-icon.png" alt="Ícone PIX">PIX</div>
+            <div class="card-cat" onclick="selecionarMetodo(this, 'debito')"><img src="icons/debito-icon.png" alt="Ícone DÉBITO">DÉBITO</div>
+            <div class="card-cat" onclick="selecionarMetodo(this, 'credito')"><img src="icons/credito-icon.png" alt="Ícone CRÉDITO">CRÉDITO</div>
+        </div>
+
+        <button id="btn-confirmar-cat" class="btn-confirmar-cat" onclick="processarConfirmacao()">✓</button>
+    </section>
+
+    <section id="tela-qrcode" class="tela">
+        <div class="top-bar"><button class="btn-voltar" onclick="navegar('tela-categoria')">←</button></div>
+        <div class="qr-area">
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=exemplo" width="100%">
+            </div>
+            <h2 id="valor-pix-qr" style="color:#FFD600; font-size: 3rem;">R$ 0,00</h2>
+            <button class="btn-recebi" onclick="finalizarRegistro()">CONFIRMAR RECEBIMENTO</button>
+        </div>
+    </section>
+
+    <section id="tela-sucesso-venda" class="tela feedback-venda">
+        <div style="font-size: 8rem;">👍</div>
+        <div class="msg-sucesso">VENDA<br>REGISTRADA!</div>
+    </section>
+
+     <section id="tela-sucesso-gasto" class="tela feedback-gasto">
+        <div style="font-size: 8rem;">👍</div>
+        <div class="msg-sucesso">GASTO<br>REGISTRADO!</div>
+    </section>
+
+    <section id="tela-cadastro" class="tela">
+        <div class="top-bar"><button class="btn-voltar" onclick="navegar('tela-resumo')">←</button></div>
+        <div style="margin-top: 50px; padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 20px;">
+            <h3 style="font-size: 25px;">CHAVE PIX CADASTRADA:</h3>
+            <div id="exibicao-chave" style="margin-bottom: 15vh; background: #fff; color: #000; padding: 15px; border-radius: 50px; font-size: 18px; font-weight: bold; word-break: break-all;">
+                Nenhuma chave cadastrada
+            </div>
+
+            <div style="margin-top: 20px; margin-bottom: 50px;">
+                <label style="display: block; margin-bottom: 10px; font-weight: bold; font-size: 25px;">TROCAR CHAVE PIX CADASTRADA:</label>
+                <input type="text" id="input-nova-chave" placeholder="Digite a nova chave" 
+                    style="width: 100%; padding: 15px; border-radius: 50px; border: none; font-size: 1.2rem; text-align: center;">
+            </div>
+
+            <button onclick="salvarChavePix()" style="background: #2E7D32; color: #fff; padding: 20px; border-radius: 15px; width: 70%; height: 100px; font-weight: bold; font-size: 1.2rem; margin: 0 auto;">
+                TROCAR CHAVE PIX
+            </button>
+        </div>
+    </section>
+
+    <section id="tela-pergunta-troco" class="tela" style="justify-content: center; align-items: center; gap: 30px;">
+    <h2 style="font-size: 2.5rem; text-align: center;">PRECISA DE TROCO?</h2>
+    <div style="display: flex; gap: 20px; width: auto;">
+        <button onclick="navegar('tela-calculo-troco')" style="flex: 1; background: #2E7D32; color: white; font-size: 2rem; padding: 40px; border-radius: 20px;">SIM</button>
+        <button onclick="finalizarRegistro()" style="flex: 1; background: #C62828; color: white; font-size: 2rem; padding: 40px; border-radius: 20px;">NÃO</button>
+    </div>
+    </section>
+
+    <section id="tela-calculo-troco" class="tela">
+        <div class="top-bar"><button class="btn-voltar" onclick="navegar('tela-pergunta-troco')">←</button></div>
+        <div style="text-align: center; padding: 10px;">
+            <span style="color: #ffffff;">VALOR RECEBIDO:</span>
+            <div id="display-recebido" style="font-size: 4rem; font-weight: bold; color: #FFD600;">R$ 0,00</div>
+            <div id="display-resultado-troco" style="font-size: 1.5rem; color: #4CAF50; margin-top: 10px; font-weight: bold;">TROCO: R$ 0,00</div>
+        </div>
+        <div class="grid-teclado" id="teclado-troco">
+            <div class="tecla" onclick="digitarTroco('7')">7</div><div class="tecla" onclick="digitarTroco('8')">8</div><div class="tecla" onclick="digitarTroco('9')">9</div>
+            <div class="tecla" onclick="digitarTroco('4')">4</div><div class="tecla" onclick="digitarTroco('5')">5</div><div class="tecla" onclick="digitarTroco('6')">6</div>
+            <div class="tecla" onclick="digitarTroco('1')">1</div><div class="tecla" onclick="digitarTroco('2')">2</div><div class="tecla" onclick="digitarTroco('3')">3</div>
+            <div class="tecla" onclick="digitarTroco(',')">,</div><div class="tecla" onclick="digitarTroco('0')">0</div><div class="tecla" style="background: #8B0000;" onclick="digitarTroco('⌫')">⌫</div>
+        </div>
+        <button class="btn-ok" style="font-size: 2rem; font-weight: bold;" onclick="finalizarRegistro()">FINALIZAR ✓</button>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
